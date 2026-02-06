@@ -13,4 +13,6 @@ public static class ApiRoutes
     public const string Expenses = Base + "/expenses";
     public const string Dashboard = Base + "/dashboard";
     public const string DashboardSummary = Base + "/dashboard/summary";
+    public const string Users = Base + "/users";
+    public const string UserLookup = Users + "/lookup";
 }

@@ -59,6 +59,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<IExpenseService, ExpenseService>();
         services.AddScoped<IBalanceService, BalanceService>();
+        services.AddScoped<IUserService, UserService>();
 
         services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
@@ -123,6 +124,33 @@ public static class ServiceCollectionExtensions
                         }
                     },
                     new string[] { }
+                }
+            });
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddSettlrCors(this IServiceCollection services, IConfiguration configuration)
+    {
+        var origins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy("SettlrCors", policy =>
+            {
+                if (origins.Length > 0)
+                {
+                    policy.WithOrigins(origins)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                }
+                else
+                {
+                    policy.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetIsOriginAllowed(_ => true);
                 }
             });
         });

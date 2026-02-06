@@ -7,6 +7,7 @@ public static class AppMessages
     public const string EmailAlreadyExists = "Email already exists.";
     public const string InvalidCredentials = "Invalid email or password.";
     public const string UserNotFound = "User not found.";
+    public const string UserFound = "User retrieved successfully.";
     public const string GroupNotFound = "Group not found.";
     public const string GroupCreated = "Group created successfully.";
     public const string MembersAdded = "Group members added successfully.";
