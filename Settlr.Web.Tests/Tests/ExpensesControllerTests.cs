@@ -20,7 +20,7 @@ public class ExpensesControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task CreateExpense_ReturnsOk()
     {
-        var request = new CreateExpenseRequestDto
+        CreateExpenseRequestDto request = new CreateExpenseRequestDto
         {
             GroupId = Guid.NewGuid(),
             PayerId = Guid.NewGuid(),
@@ -28,10 +28,10 @@ public class ExpensesControllerTests : IClassFixture<TestAppFactory>
             Description = "Dinner"
         };
 
-        var response = await _client.PostAsJsonAsync("/api/expenses", request);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/api/expenses", request);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<ExpenseDto>>();
+        Response<ExpenseDto>? payload = await response.Content.ReadFromJsonAsync<Response<ExpenseDto>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }
@@ -39,11 +39,11 @@ public class ExpensesControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task GetGroupExpenses_ReturnsOk()
     {
-        var groupId = Guid.NewGuid();
-        var response = await _client.GetAsync($"/api/groups/{groupId}/expenses");
+        Guid groupId = Guid.NewGuid();
+        HttpResponseMessage response = await _client.GetAsync($"/api/groups/{groupId}/expenses");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<List<ExpenseDto>>>();
+        Response<List<ExpenseDto>>? payload = await response.Content.ReadFromJsonAsync<Response<List<ExpenseDto>>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }

@@ -10,7 +10,7 @@ public class FakeUserService : IUserService
 {
     public Task<Response<UserDto>> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        var data = new UserDto
+        UserDto data = new UserDto
         {
             Id = TestAuthHandler.UserId,
             Name = "Test User",

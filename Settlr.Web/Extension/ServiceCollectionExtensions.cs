@@ -27,12 +27,12 @@ public static class ServiceCollectionExtensions
             {
                 options.InvalidModelStateResponseFactory = context =>
                 {
-                    var errors = context.ModelState.Values
+                    string[] errors = context.ModelState.Values
                         .SelectMany(v => v.Errors)
                         .Select(e => e.ErrorMessage)
                         .ToArray();
 
-                    var response = ResponseFactory.Fail<object>(AppMessages.ValidationFailed, StatusCodes.Status400BadRequest, errors);
+                    Response<object> response = ResponseFactory.Fail<object>(AppMessages.ValidationFailed, StatusCodes.Status400BadRequest, errors);
                     return new BadRequestObjectResult(response);
                 };
             });
@@ -69,7 +69,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSettlrAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<JwtOptions>(configuration.GetSection(ConfigKeys.JwtSection));
-        var jwtOptions = configuration.GetSection(ConfigKeys.JwtSection).Get<JwtOptions>()!;
+        JwtOptions jwtOptions = configuration.GetSection(ConfigKeys.JwtSection).Get<JwtOptions>()!;
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -101,7 +101,7 @@ public static class ServiceCollectionExtensions
                 Version = SwaggerDefaults.ApiVersion
             });
 
-            var securityScheme = new OpenApiSecurityScheme
+            OpenApiSecurityScheme securityScheme = new OpenApiSecurityScheme
             {
                 Name = HeaderNames.Authorization,
                 Type = SecuritySchemeType.Http,
@@ -133,7 +133,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddSettlrCors(this IServiceCollection services, IConfiguration configuration)
     {
-        var origins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+        string[] origins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 
         services.AddCors(options =>
         {

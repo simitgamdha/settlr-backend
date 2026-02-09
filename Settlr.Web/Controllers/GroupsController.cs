@@ -26,40 +26,40 @@ public class GroupsController : ControllerBase
     [HttpPost(ApiRoutes.Groups)]
     public async Task<ActionResult<Response<GroupDto>>> CreateGroup([FromBody] CreateGroupRequestDto request, CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
+        Guid? userId = User.GetUserId();
         if (userId == null)
         {
             return Unauthorized(ResponseFactory.Fail<GroupDto>(AppMessages.InvalidCredentials, StatusCodes.Status401Unauthorized));
         }
 
-        var response = await _groupService.CreateGroupAsync(userId.Value, request, cancellationToken);
+        Response<GroupDto> response = await _groupService.CreateGroupAsync(userId.Value, request, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
     [HttpPost(ApiRoutes.GroupMembers)]
     public async Task<ActionResult<Response<GroupDto>>> AddMembers([FromRoute] Guid groupId, [FromBody] AddGroupMembersRequestDto request, CancellationToken cancellationToken)
     {
-        var response = await _groupService.AddMembersAsync(groupId, request, cancellationToken);
+        Response<GroupDto> response = await _groupService.AddMembersAsync(groupId, request, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
     [HttpGet(ApiRoutes.Groups)]
     public async Task<ActionResult<Response<List<GroupDto>>>> GetGroups(CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
+        Guid? userId = User.GetUserId();
         if (userId == null)
         {
             return Unauthorized(ResponseFactory.Fail<List<GroupDto>>(AppMessages.InvalidCredentials, StatusCodes.Status401Unauthorized));
         }
 
-        var response = await _groupService.GetGroupsAsync(userId.Value, cancellationToken);
+        Response<List<GroupDto>> response = await _groupService.GetGroupsAsync(userId.Value, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
     [HttpGet(ApiRoutes.GroupBalances)]
     public async Task<ActionResult<Response<List<GroupBalanceDto>>>> GetGroupBalances([FromRoute] Guid groupId, CancellationToken cancellationToken)
     {
-        var response = await _balanceService.GetGroupBalancesAsync(groupId, cancellationToken);
+        Response<List<GroupBalanceDto>> response = await _balanceService.GetGroupBalancesAsync(groupId, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

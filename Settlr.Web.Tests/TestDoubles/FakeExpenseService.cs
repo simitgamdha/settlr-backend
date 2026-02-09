@@ -10,7 +10,7 @@ public class FakeExpenseService : IExpenseService
 {
     public Task<Response<ExpenseDto>> CreateExpenseAsync(CreateExpenseRequestDto request, CancellationToken cancellationToken = default)
     {
-        var data = new ExpenseDto
+        ExpenseDto data = new ExpenseDto
         {
             Id = Guid.NewGuid(),
             GroupId = request.GroupId,
@@ -25,7 +25,7 @@ public class FakeExpenseService : IExpenseService
 
     public Task<Response<List<ExpenseDto>>> GetGroupExpensesAsync(Guid groupId, CancellationToken cancellationToken = default)
     {
-        var data = new List<ExpenseDto>
+        List<ExpenseDto> data = new List<ExpenseDto>
         {
             new ExpenseDto
             {

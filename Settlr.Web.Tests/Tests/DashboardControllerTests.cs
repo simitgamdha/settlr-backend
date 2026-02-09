@@ -19,10 +19,10 @@ public class DashboardControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task GetSummary_ReturnsOk()
     {
-        var response = await _client.GetAsync("/api/dashboard/summary");
+        HttpResponseMessage response = await _client.GetAsync("/api/dashboard/summary");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<UserSummaryDto>>();
+        Response<UserSummaryDto>? payload = await response.Content.ReadFromJsonAsync<Response<UserSummaryDto>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }

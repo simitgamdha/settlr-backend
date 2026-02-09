@@ -9,6 +9,7 @@ using Settlr.Common.Messages;
 using Settlr.Common.Response;
 using Settlr.Data.DbContext;
 using Settlr.Models.Dtos.ResponseDtos;
+using Settlr.Models.Entities;
 using Settlr.Services.IServices;
 
 namespace Settlr.Services.Services;
@@ -24,7 +25,7 @@ public class BalanceService : IBalanceService
 
     public async Task<Response<List<GroupBalanceDto>>> GetGroupBalancesAsync(Guid groupId, CancellationToken cancellationToken = default)
     {
-        var group = await _context.Groups
+        Group? group = await _context.Groups
             .Include(x => x.Members)
             .ThenInclude(x => x.User)
             .Include(x => x.Expenses)
@@ -36,12 +37,12 @@ public class BalanceService : IBalanceService
             return ResponseFactory.Fail<List<GroupBalanceDto>>(AppMessages.GroupNotFound, (int)HttpStatusCode.NotFound);
         }
 
-        var balances = new List<GroupBalanceDto>();
-        foreach (var member in group.Members)
+        List<GroupBalanceDto> balances = new List<GroupBalanceDto>();
+        foreach (GroupMember member in group.Members)
         {
-            var totalPaid = group.Expenses.Where(x => x.PayerId == member.UserId).Sum(x => x.Amount);
-            var totalShare = group.Expenses.SelectMany(x => x.Splits).Where(x => x.UserId == member.UserId).Sum(x => x.Amount);
-            var net = Math.Round(totalPaid - totalShare, 2, MidpointRounding.AwayFromZero);
+            decimal totalPaid = group.Expenses.Where(x => x.PayerId == member.UserId).Sum(x => x.Amount);
+            decimal totalShare = group.Expenses.SelectMany(x => x.Splits).Where(x => x.UserId == member.UserId).Sum(x => x.Amount);
+            decimal net = Math.Round(totalPaid - totalShare, 2, MidpointRounding.AwayFromZero);
 
             balances.Add(new GroupBalanceDto
             {
@@ -58,11 +59,11 @@ public class BalanceService : IBalanceService
 
     public async Task<Response<UserSummaryDto>> GetUserSummaryAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var totalPaid = await _context.Expenses.Where(x => x.PayerId == userId).SumAsync(x => x.Amount, cancellationToken);
-        var totalShare = await _context.ExpenseSplits.Where(x => x.UserId == userId).SumAsync(x => x.Amount, cancellationToken);
-        var net = Math.Round(totalPaid - totalShare, 2, MidpointRounding.AwayFromZero);
+        decimal totalPaid = await _context.Expenses.Where(x => x.PayerId == userId).SumAsync(x => x.Amount, cancellationToken);
+        decimal totalShare = await _context.ExpenseSplits.Where(x => x.UserId == userId).SumAsync(x => x.Amount, cancellationToken);
+        decimal net = Math.Round(totalPaid - totalShare, 2, MidpointRounding.AwayFromZero);
 
-        var summary = new UserSummaryDto
+        UserSummaryDto summary = new UserSummaryDto
         {
             TotalOwedToUser = net > 0 ? net : 0,
             TotalOwedByUser = net < 0 ? Math.Abs(net) : 0

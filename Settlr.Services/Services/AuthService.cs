@@ -41,13 +41,13 @@ public class AuthService : IAuthService
 
     public async Task<Response<AuthResponseDto>> RegisterAsync(RegisterRequestDto request, CancellationToken cancellationToken = default)
     {
-        var emailExists = await _userRepository.ExistsByEmailAsync(request.Email, cancellationToken);
+        bool emailExists = await _userRepository.ExistsByEmailAsync(request.Email, cancellationToken);
         if (emailExists)
         {
             return ResponseFactory.Fail<AuthResponseDto>(AppMessages.EmailAlreadyExists, (int)HttpStatusCode.Conflict);
         }
 
-        var user = new AppUser
+        AppUser user = new AppUser
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
@@ -58,32 +58,32 @@ public class AuthService : IAuthService
         await _userRepository.AddAsync(user, cancellationToken);
         await _userRepository.SaveChangesAsync(cancellationToken);
 
-        var response = BuildAuthResponse(user);
+        AuthResponseDto response = BuildAuthResponse(user);
         return ResponseFactory.Success(response, AppMessages.RegistrationSuccess, (int)HttpStatusCode.Created);
     }
 
     public async Task<Response<AuthResponseDto>> LoginAsync(LoginRequestDto request, CancellationToken cancellationToken = default)
     {
-        var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
+        AppUser? user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
         if (user == null)
         {
             return ResponseFactory.Fail<AuthResponseDto>(AppMessages.InvalidCredentials, (int)HttpStatusCode.Unauthorized);
         }
 
-        var passwordResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
+        PasswordVerificationResult passwordResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
         if (passwordResult == PasswordVerificationResult.Failed)
         {
             return ResponseFactory.Fail<AuthResponseDto>(AppMessages.InvalidCredentials, (int)HttpStatusCode.Unauthorized);
         }
 
-        var response = BuildAuthResponse(user);
+        AuthResponseDto response = BuildAuthResponse(user);
         return ResponseFactory.Success(response, AppMessages.LoginSuccess, (int)HttpStatusCode.OK);
     }
 
     private AuthResponseDto BuildAuthResponse(AppUser user)
     {
-        var expiresAt = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpMinutes);
-        var token = CreateToken(user, expiresAt);
+        DateTime expiresAt = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpMinutes);
+        string token = CreateToken(user, expiresAt);
 
         return new AuthResponseDto
         {
@@ -95,17 +95,17 @@ public class AuthService : IAuthService
 
     private string CreateToken(AppUser user, DateTime expiresAt)
     {
-        var claims = new List<Claim>
+        List<Claim> claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.Name),
             new(ClaimTypes.Email, user.Email)
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
+        SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(
+        JwtSecurityToken token = new JwtSecurityToken(
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
             claims: claims,

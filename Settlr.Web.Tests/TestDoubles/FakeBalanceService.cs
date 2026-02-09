@@ -9,7 +9,7 @@ public class FakeBalanceService : IBalanceService
 {
     public Task<Response<List<GroupBalanceDto>>> GetGroupBalancesAsync(Guid groupId, CancellationToken cancellationToken = default)
     {
-        var data = new List<GroupBalanceDto>
+        List<GroupBalanceDto> data = new List<GroupBalanceDto>
         {
             new GroupBalanceDto
             {
@@ -26,7 +26,7 @@ public class FakeBalanceService : IBalanceService
 
     public Task<Response<UserSummaryDto>> GetUserSummaryAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var data = new UserSummaryDto
+        UserSummaryDto data = new UserSummaryDto
         {
             TotalOwedByUser = 12.34m,
             TotalOwedToUser = 56.78m

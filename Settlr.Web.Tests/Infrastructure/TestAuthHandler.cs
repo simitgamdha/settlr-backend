@@ -21,13 +21,13 @@ public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var claims = new[]
+        Claim[] claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, UserId.ToString())
         };
-        var identity = new ClaimsIdentity(claims, Scheme);
-        var principal = new ClaimsPrincipal(identity);
-        var ticket = new AuthenticationTicket(principal, Scheme);
+        ClaimsIdentity identity = new ClaimsIdentity(claims, Scheme);
+        ClaimsPrincipal principal = new ClaimsPrincipal(identity);
+        AuthenticationTicket ticket = new AuthenticationTicket(principal, Scheme);
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 }

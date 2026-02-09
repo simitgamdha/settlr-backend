@@ -23,13 +23,13 @@ public class DashboardController : ControllerBase
     [HttpGet(ApiRoutes.DashboardSummary)]
     public async Task<ActionResult<Response<UserSummaryDto>>> GetSummary(CancellationToken cancellationToken)
     {
-        var userId = User.GetUserId();
+        Guid? userId = User.GetUserId();
         if (userId == null)
         {
             return Unauthorized(ResponseFactory.Fail<UserSummaryDto>(AppMessages.InvalidCredentials, StatusCodes.Status401Unauthorized));
         }
 
-        var response = await _balanceService.GetUserSummaryAsync(userId.Value, cancellationToken);
+        Response<UserSummaryDto> response = await _balanceService.GetUserSummaryAsync(userId.Value, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

@@ -34,9 +34,9 @@ public class ExceptionHandlingMiddleware
 
     private async Task WriteErrorResponseAsync(HttpContext context, Exception ex)
     {
-        var statusCode = (int)HttpStatusCode.InternalServerError;
-        var errors = _environment.IsDevelopment() ? new[] { ex.Message } : null;
-        var response = ResponseFactory.Fail<object>(AppMessages.UnhandledException, statusCode, errors);
+        int statusCode = (int)HttpStatusCode.InternalServerError;
+        string[]? errors = _environment.IsDevelopment() ? new[] { ex.Message } : null;
+        Response<object> response = ResponseFactory.Fail<object>(AppMessages.UnhandledException, statusCode, errors);
 
         context.Response.ContentType = MediaTypeNames.Application.Json;
         context.Response.StatusCode = statusCode;

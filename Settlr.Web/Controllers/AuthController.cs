@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
     [HttpPost(ApiRoutes.AuthRegister)]
     public async Task<ActionResult<Response<AuthResponseDto>>> Register([FromBody] RegisterRequestDto request, CancellationToken cancellationToken)
     {
-        var response = await _authService.RegisterAsync(request, cancellationToken);
+        Response<AuthResponseDto> response = await _authService.RegisterAsync(request, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 
@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
     [HttpPost(ApiRoutes.AuthLogin)]
     public async Task<ActionResult<Response<AuthResponseDto>>> Login([FromBody] LoginRequestDto request, CancellationToken cancellationToken)
     {
-        var response = await _authService.LoginAsync(request, cancellationToken);
+        Response<AuthResponseDto> response = await _authService.LoginAsync(request, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

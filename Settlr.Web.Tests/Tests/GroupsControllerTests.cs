@@ -20,15 +20,15 @@ public class GroupsControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task CreateGroup_ReturnsOk()
     {
-        var request = new CreateGroupRequestDto
+        CreateGroupRequestDto request = new CreateGroupRequestDto
         {
             Name = "Weekend Trip"
         };
 
-        var response = await _client.PostAsJsonAsync("/api/groups", request);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/api/groups", request);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<GroupDto>>();
+        Response<GroupDto>? payload = await response.Content.ReadFromJsonAsync<Response<GroupDto>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }
@@ -36,16 +36,16 @@ public class GroupsControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task AddMembers_ReturnsOk()
     {
-        var groupId = Guid.NewGuid();
-        var request = new AddGroupMembersRequestDto
+        Guid groupId = Guid.NewGuid();
+        AddGroupMembersRequestDto request = new AddGroupMembersRequestDto
         {
             UserIds = new List<Guid> { Guid.NewGuid() }
         };
 
-        var response = await _client.PostAsJsonAsync($"/api/groups/{groupId}/members", request);
+        HttpResponseMessage response = await _client.PostAsJsonAsync($"/api/groups/{groupId}/members", request);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<GroupDto>>();
+        Response<GroupDto>? payload = await response.Content.ReadFromJsonAsync<Response<GroupDto>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }
@@ -53,10 +53,10 @@ public class GroupsControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task GetGroups_ReturnsOk()
     {
-        var response = await _client.GetAsync("/api/groups");
+        HttpResponseMessage response = await _client.GetAsync("/api/groups");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<List<GroupDto>>>();
+        Response<List<GroupDto>>? payload = await response.Content.ReadFromJsonAsync<Response<List<GroupDto>>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }
@@ -64,11 +64,11 @@ public class GroupsControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task GetGroupBalances_ReturnsOk()
     {
-        var groupId = Guid.NewGuid();
-        var response = await _client.GetAsync($"/api/groups/{groupId}/balances");
+        Guid groupId = Guid.NewGuid();
+        HttpResponseMessage response = await _client.GetAsync($"/api/groups/{groupId}/balances");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<List<GroupBalanceDto>>>();
+        Response<List<GroupBalanceDto>>? payload = await response.Content.ReadFromJsonAsync<Response<List<GroupBalanceDto>>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }

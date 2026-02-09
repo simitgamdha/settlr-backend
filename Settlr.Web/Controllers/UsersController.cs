@@ -23,11 +23,11 @@ public class UsersController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(email))
         {
-            var errorResponse = ResponseFactory.Fail<UserDto>("Email is required.", StatusCodes.Status400BadRequest);
+            Response<UserDto> errorResponse = ResponseFactory.Fail<UserDto>("Email is required.", StatusCodes.Status400BadRequest);
             return StatusCode(errorResponse.StatusCode, errorResponse);
         }
 
-        var response = await _userService.GetByEmailAsync(email, cancellationToken);
+        Response<UserDto> response = await _userService.GetByEmailAsync(email, cancellationToken);
         return StatusCode(response.StatusCode, response);
     }
 }

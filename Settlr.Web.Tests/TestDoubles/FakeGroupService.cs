@@ -10,19 +10,19 @@ public class FakeGroupService : IGroupService
 {
     public Task<Response<GroupDto>> CreateGroupAsync(Guid userId, CreateGroupRequestDto request, CancellationToken cancellationToken = default)
     {
-        var data = BuildGroup(userId, request.Name);
+        GroupDto data = BuildGroup(userId, request.Name);
         return Task.FromResult(ResponseFactory.Success(data, "Group created", StatusCodes.Status200OK));
     }
 
     public Task<Response<GroupDto>> AddMembersAsync(Guid groupId, AddGroupMembersRequestDto request, CancellationToken cancellationToken = default)
     {
-        var data = BuildGroup(Guid.NewGuid(), "Test Group");
+        GroupDto data = BuildGroup(Guid.NewGuid(), "Test Group");
         return Task.FromResult(ResponseFactory.Success(data, "Members added", StatusCodes.Status200OK));
     }
 
     public Task<Response<List<GroupDto>>> GetGroupsAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var data = new List<GroupDto>
+        List<GroupDto> data = new List<GroupDto>
         {
             BuildGroup(userId, "Trip to NYC")
         };

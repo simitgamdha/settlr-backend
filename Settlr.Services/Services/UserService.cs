@@ -6,6 +6,7 @@ using Settlr.Common.Messages;
 using Settlr.Common.Response;
 using Settlr.Data.IRepositories;
 using Settlr.Models.Dtos.ResponseDtos;
+using Settlr.Models.Entities;
 using Settlr.Services.IServices;
 
 namespace Settlr.Services.Services;
@@ -23,13 +24,13 @@ public class UserService : IUserService
 
     public async Task<Response<UserDto>> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+        AppUser? user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user == null)
         {
             return ResponseFactory.Fail<UserDto>(AppMessages.UserNotFound, (int)HttpStatusCode.NotFound);
         }
 
-        var dto = _mapper.Map<UserDto>(user);
+        UserDto dto = _mapper.Map<UserDto>(user);
         return ResponseFactory.Success(dto, AppMessages.UserFound, (int)HttpStatusCode.OK);
     }
 }

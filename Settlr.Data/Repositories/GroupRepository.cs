@@ -48,12 +48,12 @@ public class GroupRepository : IGroupRepository
 
     public async Task AddMembersAsync(Guid groupId, IEnumerable<Guid> userIds, CancellationToken cancellationToken = default)
     {
-        var existingMemberIds = await _context.GroupMembers
+        List<Guid> existingMemberIds = await _context.GroupMembers
             .Where(x => x.GroupId == groupId && userIds.Contains(x.UserId))
             .Select(x => x.UserId)
             .ToListAsync(cancellationToken);
 
-        var newMembers = userIds
+        IEnumerable<GroupMember> newMembers = userIds
             .Where(id => !existingMemberIds.Contains(id))
             .Select(id => new GroupMember
             {

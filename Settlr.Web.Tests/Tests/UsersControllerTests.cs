@@ -19,10 +19,10 @@ public class UsersControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task GetByEmail_WithEmail_ReturnsOk()
     {
-        var response = await _client.GetAsync("/api/users/lookup?email=test@example.com");
+        HttpResponseMessage response = await _client.GetAsync("/api/users/lookup?email=test@example.com");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<UserDto>>();
+        Response<UserDto>? payload = await response.Content.ReadFromJsonAsync<Response<UserDto>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }
@@ -30,7 +30,7 @@ public class UsersControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task GetByEmail_WithoutEmail_ReturnsBadRequest()
     {
-        var response = await _client.GetAsync("/api/users/lookup");
+        HttpResponseMessage response = await _client.GetAsync("/api/users/lookup");
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }

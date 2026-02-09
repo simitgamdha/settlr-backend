@@ -30,22 +30,22 @@ public class ExpenseService : IExpenseService
 
     public async Task<Response<ExpenseDto>> CreateExpenseAsync(CreateExpenseRequestDto request, CancellationToken cancellationToken = default)
     {
-        var group = await _groupRepository.GetByIdWithMembersAsync(request.GroupId, cancellationToken);
+        Group? group = await _groupRepository.GetByIdWithMembersAsync(request.GroupId, cancellationToken);
         if (group == null)
         {
             return ResponseFactory.Fail<ExpenseDto>(AppMessages.GroupNotFound, (int)HttpStatusCode.NotFound);
         }
 
-        var payerInGroup = group.Members.Any(x => x.UserId == request.PayerId);
+        bool payerInGroup = group.Members.Any(x => x.UserId == request.PayerId);
         if (!payerInGroup)
         {
             return ResponseFactory.Fail<ExpenseDto>(AppMessages.PayerNotInGroup, (int)HttpStatusCode.BadRequest);
         }
 
-        var memberIds = group.Members.Select(x => x.UserId).ToList();
-        var splits = BuildEqualSplits(memberIds, request.Amount);
+        List<Guid> memberIds = group.Members.Select(x => x.UserId).ToList();
+        List<ExpenseSplit> splits = BuildEqualSplits(memberIds, request.Amount);
 
-        var expense = new Expense
+        Expense expense = new Expense
         {
             Id = Guid.NewGuid(),
             GroupId = request.GroupId,
@@ -58,30 +58,30 @@ public class ExpenseService : IExpenseService
         await _expenseRepository.AddAsync(expense, cancellationToken);
         await _expenseRepository.SaveChangesAsync(cancellationToken);
 
-        var dto = _mapper.Map<ExpenseDto>(expense);
+        ExpenseDto dto = _mapper.Map<ExpenseDto>(expense);
         return ResponseFactory.Success(dto, AppMessages.ExpenseCreated, (int)HttpStatusCode.Created);
     }
 
     public async Task<Response<List<ExpenseDto>>> GetGroupExpensesAsync(Guid groupId, CancellationToken cancellationToken = default)
     {
-        var expenses = await _expenseRepository.GetGroupExpensesAsync(groupId, cancellationToken);
-        var dto = _mapper.Map<List<ExpenseDto>>(expenses);
+        IReadOnlyList<Expense> expenses = await _expenseRepository.GetGroupExpensesAsync(groupId, cancellationToken);
+        List<ExpenseDto> dto = _mapper.Map<List<ExpenseDto>>(expenses);
         return ResponseFactory.Success(dto, AppMessages.ExpenseList, (int)HttpStatusCode.OK);
     }
 
     private static List<ExpenseSplit> BuildEqualSplits(List<Guid> memberIds, decimal amount)
     {
-        var count = memberIds.Count;
-        var splits = new List<ExpenseSplit>(count);
+        int count = memberIds.Count;
+        List<ExpenseSplit> splits = new List<ExpenseSplit>(count);
         if (count == 0)
         {
             return splits;
         }
 
-        var share = Math.Round(amount / count, 2, MidpointRounding.AwayFromZero);
-        var remainder = amount - (share * (count - 1));
+        decimal share = Math.Round(amount / count, 2, MidpointRounding.AwayFromZero);
+        decimal remainder = amount - (share * (count - 1));
 
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             splits.Add(new ExpenseSplit
             {

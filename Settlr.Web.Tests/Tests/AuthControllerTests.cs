@@ -20,17 +20,17 @@ public class AuthControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task Register_WithValidRequest_ReturnsOk()
     {
-        var request = new RegisterRequestDto
+        RegisterRequestDto request = new RegisterRequestDto
         {
             Name = "Test User",
             Email = "test@example.com",
             Password = "Password123!"
         };
 
-        var response = await _client.PostAsJsonAsync("/api/auth/register", request);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/api/auth/register", request);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<AuthResponseDto>>();
+        Response<AuthResponseDto>? payload = await response.Content.ReadFromJsonAsync<Response<AuthResponseDto>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }
@@ -44,7 +44,7 @@ public class AuthControllerTests : IClassFixture<TestAppFactory>
             Password = "Password123!"
         };
 
-        var response = await _client.PostAsJsonAsync("/api/auth/register", request);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/api/auth/register", request);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -52,16 +52,16 @@ public class AuthControllerTests : IClassFixture<TestAppFactory>
     [Fact]
     public async Task Login_WithValidRequest_ReturnsOk()
     {
-        var request = new LoginRequestDto
+        LoginRequestDto request = new LoginRequestDto
         {
             Email = "test@example.com",
             Password = "Password123!"
         };
 
-        var response = await _client.PostAsJsonAsync("/api/auth/login", request);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/api/auth/login", request);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var payload = await response.Content.ReadFromJsonAsync<Response<AuthResponseDto>>();
+        Response<AuthResponseDto>? payload = await response.Content.ReadFromJsonAsync<Response<AuthResponseDto>>();
         Assert.NotNull(payload);
         Assert.True(payload!.Succeeded);
     }
@@ -74,7 +74,7 @@ public class AuthControllerTests : IClassFixture<TestAppFactory>
             Password = "Password123!"
         };
 
-        var response = await _client.PostAsJsonAsync("/api/auth/login", request);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/api/auth/login", request);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
