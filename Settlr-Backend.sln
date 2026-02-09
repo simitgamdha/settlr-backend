@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settlr.Utilities", "Settlr.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settlr.Web", "Settlr.Web\Settlr.Web.csproj", "{4A305243-ACD3-4F4C-8048-C777C4B1C49B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settlr.Web.Tests", "Settlr.Web.Tests\Settlr.Web.Tests.csproj", "{49CB3E1C-6000-49B4-870F-D4271492A492}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,18 @@ Global
 		{4A305243-ACD3-4F4C-8048-C777C4B1C49B}.Release|x64.Build.0 = Release|Any CPU
 		{4A305243-ACD3-4F4C-8048-C777C4B1C49B}.Release|x86.ActiveCfg = Release|Any CPU
 		{4A305243-ACD3-4F4C-8048-C777C4B1C49B}.Release|x86.Build.0 = Release|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Debug|x64.Build.0 = Debug|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Debug|x86.Build.0 = Debug|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Release|x64.ActiveCfg = Release|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Release|x64.Build.0 = Release|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Release|x86.ActiveCfg = Release|Any CPU
+		{49CB3E1C-6000-49B4-870F-D4271492A492}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
